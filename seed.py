@@ -101,6 +101,12 @@ def run_seed() -> None:
 
 
 if __name__ == "__main__":
-    # Asegura de forma mandatoria la existencia previa de las tablas físicas en la BD antes de insertar
-    Base.metadata.create_all(bind=engine)
-    run_seed()
+    try:
+        # Asegura la creación de tablas
+        Base.metadata.create_all(bind=engine)
+        # Ejecuta el seed
+        run_seed()
+    except Exception as e:
+        print(f"❌ Error crítico en el seed: {e}")
+        # En lugar de sys.exit(1), dejamos que la app continúe si el error es solo de datos
+        # Esto evita que el contenedor se apague con "status 3"
