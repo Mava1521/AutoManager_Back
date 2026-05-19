@@ -39,14 +39,14 @@ def run_seed() -> None:
                         nombre="Admin",
                         apellido="Manager",
                         email="admin@automanager.com",
-                        password=hash_password("Admin1234!"),
+                        password=hash_password("Admin1234!"[:72]),
                         rol=RolEnum.admin,
                     ),
                     Usuario(
                         nombre="David",
                         apellido="Sandoval",
                         email="david@automanager.com",
-                        password=hash_password("Viewer1234!"),
+                        password=hash_password("Viewer1234!"[:72]),
                         rol=RolEnum.viewer,
                     )
                 ]
