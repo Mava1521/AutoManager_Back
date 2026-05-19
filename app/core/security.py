@@ -22,29 +22,34 @@ logger = logging.getLogger(__name__)
 class PasswordHasher:
     """
     Encargado exclusivo del ciclo de vida y verificación de contraseñas.
-  
     """
     
     def __init__(self):
-        # Esquema seguro recomendado por defecto
-        self._context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+        # 1. Definimos el contexto como atributo de la instancia (self._context)
+        # 2. Agregamos bcrypt__ident="2b" para evitar el error de verificación de bugs en Render
+        self._context = CryptContext(
+            schemes=["bcrypt"], 
+            deprecated="auto",
+            bcrypt__ident="2b"
+        )
 
     def hash(self, plain_password: str) -> str:
         """Transforma una contraseña en texto plano en un hash seguro e irreversible."""
         if not plain_password:
             raise ValueError("La contraseña a procesar no puede estar vacía.")
-        return self._context.hash(plain_password)
+        # Truncamos a 72 caracteres para evitar el ValueError de bcrypt
+        return self._context.hash(plain_password[:72])
 
     def verify(self, plain_password: str, hashed_password: str) -> bool:
         """Compara de forma segura una contraseña en texto plano con su hash."""
         if not plain_password or not hashed_password:
             return False
         try:
-            return self._context.verify(plain_password, hashed_password)
+            # Truncamos también aquí al verificar
+            return self._context.verify(plain_password[:72], hashed_password)
         except Exception as exc:
             logger.error("[Security] Error inesperado verificando hash: %s", str(exc))
             return False
-
 
 # ══════════════════════════════════════════════════════════════════════════════
 # 2. SERVICIO DE TOKENS (Open/Closed Principle & DIP)
