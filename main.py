@@ -66,7 +66,10 @@ app = FastAPI(
 # CORS — Restringe o habilita peticiones cruzadas desde el frontend React
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.origins_list,  # Campo computado bajo estándar de Pydantic V2
+    allow_origins=[
+        "https://auto-manager-front.vercel.app", # Tu URL de Vercel sin diagonal al final
+        "http://localhost:5173"                  # Para desarrollo local
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
